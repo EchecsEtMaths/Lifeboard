@@ -1,2 +1,105 @@
 # Lifeboard
+
 A dashboard to improve your life
+
+## TODO
+
+- Finances
+    - Solo
+        - Comptes chaque jour
+            - Solde du compte courant
+            - Dernières transactions
+            - Ajouter une transaction
+        - Etat global
+            - Connexion avec banque
+            - Connexion avec Natixis
+    - Couple
+        - Dépenses communes
+        - Dépenses unitaires
+        - Prise en compte des revenus
+        - Dettes mutuelles
+- Courses et inventaire
+    - Liste de courses dynamique
+    - Inventaire de nourriture
+    - Liste de recettes
+        - Suggestions de recette
+        - Recette du jour
+        - Système de notation
+- Sport
+    - Suivi chaque
+        - Jour
+        - Semaine
+        - Mois
+        - Année
+    - Statistiques
+    - Prochains objectifs
+        - Rappels réguliers
+        - Paliers
+- Collections
+    - Lego
+    - Cocinelles
+    - Ajout d'une collection
+- Arbre généalogique
+    - Affichage de mon arbre
+    - Ajout d'une personne
+    - Ajout du profil de chaque personne
+    - Ajout par n'importe qui sur sa branche
+- Centralisation des mails
+    - Tri des mails
+- Watchlist
+    - Jeux à faire
+    - Films à voir
+    - Séries à voir
+- Profil
+    - Système de succès
+    - Photo de profil ou avatar
+    - Page de personnalisation de profil
+- Dark thème
+    - Multiples thèmes
+    - Thèmes périodes de l'année (Halloween, Noel, Saint Patrick etc...)
+- Voyages
+    - Liste des voyages déjà fait/avec qui
+    - Liste des voyages à faire
+    - Liste voyages utopiques
+    - Carte
+    - Connexion avec Google Maps
+    - Connexion avec MyMaps
+- Où est mon objet
+    - Donne une adresse où est l'objet
+    - Donne une pièce où est l'objet
+    - Donne une position précise de l'objet
+- Base de connaissance
+    - Connexion avec Obisdian
+    - Connexion avec Notion
+- Agenda
+    - Connexion avec Google Agenda
+- Todolist
+    - Journée
+        - Habit tracker
+        - Connexion avec Daylio
+        - Rappels de tâches régulières
+    - Court terme
+        - Rappels de tâches régulières
+        - Planification
+    - Long terme
+        - Planification
+    - Bucket list
+- Liste de lectures
+    - Connexion avec Bookshelf
+    - Aide PAL
+    - Agenda Sortie
+- Travail
+    - Suivi des consos
+    - Notes inbox
+    - Todolist
+    - API Azure
+- Liste de cadeaux
+    - Plannificateur
+    - Rappels
+    - Générateur d'idées
+- Portfolio
+    - Présentation des projets
+    - Suivi des projets
+- Setup
+    - Inventaire
+- Contact
