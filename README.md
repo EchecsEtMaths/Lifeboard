@@ -103,3 +103,10 @@ A dashboard to improve your life
 - Setup
     - Inventaire
 - Contact
+    - Réseaux sociaux
+- Check list pour faire sa valise
+    - Sélection de la durée
+    - Sélection de la météo
+    - Sélection des activités
+    - Sélection du lieu
+    - Suggestion de checklist d'affaires à prendre
