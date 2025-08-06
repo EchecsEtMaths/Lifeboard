@@ -43,3 +43,30 @@ th {
 tbody tr:nth-child(even) {
     background-color: rgba(255, 255, 255, 0.025);
 }
+
+#add-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background-color: var(--surface);
+    color: var(--accent);
+    border: none;
+    border-radius: 50%;
+    font-size: 32px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    z-index: 1000;
+}
+
+#add-button:hover {
+    background-color: var(--accent);
+    color: var(--surface);
+    transform: scale(1.1);
+}
+
+#add-button:active {
+    transform: scale(0.95);
+}

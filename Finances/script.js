@@ -4,6 +4,7 @@ function construtTable(tableName, data) {
     return document.createTextNode("Aucune donnée.");
 
   const columns = Object.keys(data[0]);
+  const visibleColumns = columns.slice(1);
   const tableEl = document.createElement("table");
   const caption = document.createElement("caption");
   caption.textContent = tableName;
@@ -11,20 +12,67 @@ function construtTable(tableName, data) {
 
   const thead = document.createElement("thead");
   const headRow = document.createElement("tr");
-  for (let col of columns) {
+  for (let col of visibleColumns) {
     const th = document.createElement("th");
-    th.textContent = col;
+    th.textContent = col === "categorieNom" ? "Catégorie" : col;
+
     headRow.appendChild(th);
   }
   thead.appendChild(headRow);
   tableEl.appendChild(thead);
 
+  const categories = [
+    ...new Set(data.map((row) => row.categorieNom).filter(Boolean)),
+  ];
+  const colorPalette = [
+    "#e6194b",
+    "#3cb44b",
+    "#ffe119",
+    "#4363d8",
+    "#f58231",
+    "#911eb4",
+    "#46f0f0",
+    "#f032e6",
+    "#bcf60c",
+  ];
+
+  const categoryColors = new Map();
+  categories.forEach((cat, index) => {
+    categoryColors.set(cat, colorPalette[index % colorPalette.length]);
+  });
+
   const tbody = document.createElement("tbody");
   for (let row of data) {
     const tr = document.createElement("tr");
-    for (let col of columns) {
+    for (let col of visibleColumns) {
       const td = document.createElement("td");
-      td.textContent = row[col] ?? "Aucun";
+      let value = row[col];
+
+      if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}T/.test(value)) {
+        const date = new Date(value);
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+        value = `${day} / ${month} / ${year}`;
+      }
+
+      if (col === "categorieNom" && value) {
+        td.style.color = categoryColors.get(value);
+      }
+
+      if (col.toLowerCase().includes("montant") && typeof value === "number") {
+        if (value < 0) {
+          td.style.color = "#e6194b";
+        } else if (value > 0) {
+          td.style.color = "#3cb44b";
+        }
+        value = new Intl.NumberFormat("fr-FR", {
+          style: "currency",
+          currency: "EUR",
+        }).format(value);
+      }
+
+      td.textContent = value ?? "Aucun";
       tr.appendChild(td);
     }
     tbody.appendChild(tr);
@@ -34,128 +82,26 @@ function construtTable(tableName, data) {
   return tableEl;
 }
 
-// 🔄 Charger toutes les tables (Transactions, Categorie)
-async function loadDatabase() {
-  const container = document.getElementById("tables");
-  container.innerHTML = "";
-
-  const tables = ["Transactions", "Categorie"];
-  for (let tableName of tables) {
-    const data = await db[tableName].toArray();
-    const tableEl = construtTable(tableName, data);
-    container.appendChild(tableEl);
-  }
-}
-
-// 📋 Charger les dernières transactions avec jointure
-async function loadLastTransactions() {
+async function loadLastTransactions(data) {
   const container = document.getElementById("lastTransactions");
   container.innerHTML = "";
 
-  const transactions = await db.Transactions.where("compte_id")
-    .equals(1)
-    .reverse()
-    .sortBy("date_transac");
+  const limited = data.slice(0, 50);
 
-  const limited = transactions.slice(0, 50);
+  const tableEl = construtTable("Dernières transactions courantes", limited);
 
-  const withCategorie = await Promise.all(
-    limited.map(async (t) => {
-      const cat = await db.Categorie.get(t.categorie_id);
-      return {
-        Nom: t.nom,
-        Date: t.date_transac,
-        Montant: `${t.montant} €`,
-        Catégorie: cat ? cat.nom : "Aucune",
-      };
-    })
-  );
-
-  const tableEl = construtTable(
-    "Dernières transactions courantes",
-    withCategorie
-  );
   container.appendChild(tableEl);
 }
 
-// ➕ Ajouter une transaction
-async function test() {
-  await db.Transactions.add({
-    nom: "test ajout",
-    date_transac: "2025-07-26",
-    montant: -50,
-    compte_id: 1,
-    categorie_id: 1,
-  });
-
-  await loadLastTransactions();
-}
-
-// 🔘 Bouton ajout
-async function addTransaction() {
-  try {
-    await test();
-  } catch (err) {
-    document.getElementById("add-button").textContent =
-      "Erreur d'ajout : " + err;
-    console.error(err);
-  }
-}
-
-// 🏁 Initialisation
-loadLastTransactions().catch((err) => {
-  document.getElementById("lastTransactions").textContent =
-    "Erreur de chargement : " + err;
-});
-loadDatabase().catch((err) => {
-  document.getElementById("tables").textContent =
-    "Erreur de chargement : " + err;
-});
-
-async function importSQLiteToDexie() {
-  const SQL = await initSqlJs({
-    locateFile: (file) =>
-      `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/${file}`,
-  });
-
-  const response = await fetch("../BDD/finances.db");
-  const buffer = await response.arrayBuffer();
-  const sqliteDB = new SQL.Database(new Uint8Array(buffer));
-
-  // Charger les données de Categorie
-  const catRes = sqliteDB.exec("SELECT * FROM Categorie");
-  const catCols = catRes[0]?.columns || [];
-  const catRows = catRes[0]?.values || [];
-  const categories = catRows.map((row) =>
-    Object.fromEntries(catCols.map((col, i) => [col, row[i]]))
-  );
-
-  // Charger les données de Transactions
-  const transRes = sqliteDB.exec("SELECT * FROM Transactions");
-  const transCols = transRes[0]?.columns || [];
-  const transRows = transRes[0]?.values || [];
-  const transactions = transRows.map((row) =>
-    Object.fromEntries(transCols.map((col, i) => [col, row[i]]))
-  );
-
-  // Vider Dexie (au cas où)
-  await db.Categorie.clear();
-  await db.Transactions.clear();
-
-  // Injecter dans IndexedDB
-  await db.Categorie.bulkAdd(categories);
-  await db.Transactions.bulkAdd(transactions);
-
-  console.log("✅ Données importées depuis finances.db dans IndexedDB");
-}
-
 (async () => {
-  // Une seule fois au démarrage si la base est vide
-  const isEmpty = (await db.Transactions.count()) === 0;
-  if (isEmpty) {
-    await importSQLiteToDexie();
-  }
-
-  await loadLastTransactions();
-  await loadDatabase();
+  fetch("https://localhost:7040/Transactions")
+    .then((response) => response.json())
+    .then((data) => {
+      loadLastTransactions(data);
+    })
+    .catch((error) => {
+      document.getElementById("lastTransactions").innerHTML =
+        "Erreur lors de la récupération des transactions";
+      console.error("Erreur:", error);
+    });
 })();
