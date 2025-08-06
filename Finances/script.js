@@ -82,6 +82,7 @@ function construtTable(tableName, data) {
   return tableEl;
 }
 
+/* Transactions */
 async function loadLastTransactions(data) {
   const container = document.getElementById("lastTransactions");
   container.innerHTML = "";
@@ -102,6 +103,28 @@ async function loadLastTransactions(data) {
     .catch((error) => {
       document.getElementById("lastTransactions").innerHTML =
         "Erreur lors de la récupération des transactions";
+      console.error("Erreur:", error);
+    });
+})();
+
+/* Total courant */
+
+async function loadTotalCourant(data) {
+  const container = document.getElementById("totalCourant");
+  container.innerHTML = "";
+
+  container.innerHTML = "<h2>Total : " + data.total + " €<h2>";
+}
+
+(async () => {
+  fetch("https://localhost:7040/Transactions/total-courant")
+    .then((response) => response.json())
+    .then((data) => {
+      loadTotalCourant(data);
+    })
+    .catch((error) => {
+      document.getElementById("totalCourant").innerHTML =
+        "Erreur lors de la récupération du total";
       console.error("Erreur:", error);
     });
 })();
