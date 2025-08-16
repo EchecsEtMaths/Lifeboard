@@ -1,4 +1,14 @@
-// 💡 Construction de table HTML
+const formatter = new Intl.NumberFormat("fr-FR", {
+  style: "currency",
+  currency: "EUR",
+});
+
+/* Functions */
+
+function deconnexion() {
+  window.location.href = "/index.html";
+}
+
 function construtTable(tableName, data) {
   if (!data || data.length === 0)
     return document.createTextNode("Aucune donnée.");
@@ -18,6 +28,10 @@ function construtTable(tableName, data) {
 
     headRow.appendChild(th);
   }
+  const th = document.createElement("th");
+  th.textContent = "Action";
+  headRow.appendChild(th);
+
   thead.appendChild(headRow);
   tableEl.appendChild(thead);
 
@@ -75,6 +89,35 @@ function construtTable(tableName, data) {
       td.textContent = value ?? "Aucun";
       tr.appendChild(td);
     }
+    const td = document.createElement("td");
+    let htmlActions = "";
+    htmlActions +=
+      "<button class='action' title='Modifier la ligne'>✏️</button>";
+    htmlActions += "<span> </span>";
+    htmlActions +=
+      "<button class='action' title='Supprimer la ligne' popovertarget='supprimer-popover-" +
+      row.id +
+      "'>🗑️</button>";
+    htmlActions +=
+      "<div popover class='action-popover' id='supprimer-popover-" +
+      row.id +
+      "'>";
+    htmlActions += "<div>";
+    htmlActions +=
+      "Confirmer la suppression de la transaction : " + row.nom + " ?";
+    htmlActions += "<br>";
+    htmlActions +=
+      "<button class='suppression' onclick='suppression(" +
+      row.id +
+      ")'>✅</button>";
+    htmlActions +=
+      "<button class='annuler' onclick='popoverClose(" +
+      row.id +
+      ")'>❌</button>";
+    htmlActions += "</div>";
+    td.innerHTML = htmlActions;
+    tr.appendChild(td);
+
     tbody.appendChild(tr);
   }
 
@@ -82,7 +125,6 @@ function construtTable(tableName, data) {
   return tableEl;
 }
 
-/* Transactions */
 async function loadLastTransactions(data) {
   const container = document.getElementById("lastTransactions");
   container.innerHTML = "";
@@ -94,21 +136,6 @@ async function loadLastTransactions(data) {
   container.appendChild(tableEl);
 }
 
-(async () => {
-  fetch("https://localhost:7040/Transactions")
-    .then((response) => response.json())
-    .then((data) => {
-      loadLastTransactions(data);
-    })
-    .catch((error) => {
-      document.getElementById("lastTransactions").innerHTML =
-        "Erreur lors de la récupération des transactions";
-      console.error("Erreur:", error);
-    });
-})();
-
-/* Total courant */
-
 async function loadTotalCourant(data) {
   const container = document.getElementById("totalCourant");
   container.innerHTML = "";
@@ -116,15 +143,85 @@ async function loadTotalCourant(data) {
   container.innerHTML = "<h2>Total : " + data.total + " €<h2>";
 }
 
-(async () => {
-  fetch("https://localhost:7040/Transactions/total-courant")
-    .then((response) => response.json())
-    .then((data) => {
-      loadTotalCourant(data);
-    })
-    .catch((error) => {
-      document.getElementById("totalCourant").innerHTML =
-        "Erreur lors de la récupération du total";
-      console.error("Erreur:", error);
+function popoverClose(id) {
+  document.getElementById("supprimer-popover-" + id).hidePopover();
+}
+
+async function suppression(id) {
+  await suppressionService(id);
+  document.getElementById("supprimer-popover-" + id).hidePopover();
+}
+
+async function addTransaction() {
+  addTransactionService();
+}
+
+/* Main */
+
+getTransactionsService();
+
+getTotalCourantService();
+
+getCategoriesService();
+
+const urlParams = new URLSearchParams(window.location.search);
+const user = urlParams.get("user");
+
+if (user) {
+  document.querySelectorAll(".menu-item, .back-button").forEach((link) => {
+    const linkUrl = new URL(link.href, window.location.origin);
+    linkUrl.searchParams.set("user", user);
+    link.href = linkUrl.toString();
+  });
+}
+
+/* Events listeners */
+
+document.getElementById("add-button").addEventListener("click", () => {
+  document.getElementById("add-modal").showModal();
+});
+
+document.getElementById("add-form").addEventListener("submit", (event) => {
+  event.preventDefault();
+  let isValid = true;
+
+  document
+    .getElementById("add-form")
+    .querySelectorAll("input, select")
+    .forEach((input) => {
+      if (!input.checkValidity()) {
+        isValid = false;
+      }
     });
-})();
+
+  if (!isValid) return;
+
+  addTransaction();
+  document.getElementById("add-modal").close();
+  document.getElementById("nom-add").value = "";
+  document.getElementById("date-add").value = "";
+  document.getElementById("montant-add").value = formatter.format(0);
+  document.getElementById("categorie-add").value = "";
+});
+
+document.querySelectorAll(".montant").forEach((input) => {
+  input.value = formatter.format(0);
+
+  input.addEventListener("blur", () => {
+    let value = parseFloat(input.value.replace(",", "."));
+    if (!isNaN(value)) {
+      input.value = formatter.format(value);
+    }
+  });
+
+  input.addEventListener("focus", () => {
+    input.value = input.value.replace(/[^\d,.-]/g, "");
+  });
+});
+
+document.querySelectorAll(".close-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const dialog = btn.closest("dialog");
+    if (dialog) dialog.close();
+  });
+});

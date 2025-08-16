@@ -70,3 +70,110 @@ tbody tr:nth-child(even) {
 #add-button:active {
     transform: scale(0.95);
 }
+
+
+/* Modal */
+:modal {
+    background-color: var(--surface-mat);
+    width: 500px;
+    border: none;
+    border-radius: 15px;
+    text-align: center;
+    color: var(--text);
+}
+
+:modal button {
+    background-color: var(--accent);
+    border: none;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 15px;
+    color: var(--bg);
+    width: max-content;
+    margin: auto;
+}
+
+:modal button:hover {
+    background-color: var(--bg);
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 15px;
+    cursor: pointer;
+    color: var(--accent);
+}
+
+:modal form {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    margin: auto;
+}
+
+:modal form * {
+    margin-top: 25px;
+}
+
+:modal form input,
+:modal form select {
+    background-color: var(--bg);
+    color: var(--text);
+    padding: 10px;
+    font-family: inherit;
+    font-size: 16px;
+    border: none;
+    color-scheme: dark;
+    border-radius: 15px;
+}
+
+:modal form input.error,
+:modal form select.error {
+    border-color: red;
+    color: red;
+}
+
+:modal .close-btn {
+    position: absolute;
+    top: 0.5em;
+    right: 0.5em;
+    background: transparent;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    color: var(--accent);
+}
+
+:modal .close-btn:hover {
+    position: absolute;
+    top: 0.5em;
+    right: 0.5em;
+    background: transparent;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    color: var(--accent);
+    transform: scale(1.2);
+}
+
+.action {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.action-popover {
+    background-color: var(--surface-mat);
+    border: none;
+    border-radius: 15px;
+    padding: 0;
+    margin-top: 15px;
+    color: var(--accent);
+    padding: 30px;
+    text-align: center;
+}
+
+.action-popover button {
+    background-color: transparent;
+    border: none;
+    font-size: 30px;
+    cursor: pointer;
+}

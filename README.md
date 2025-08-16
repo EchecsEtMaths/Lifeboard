@@ -10,6 +10,8 @@ A dashboard to improve your life
       - Solde du compte courant
       - Dernières transactions
       - Ajouter une transaction
+      - Modifier une transaction
+      - Supprimer une transaction
     - Etat global
       - Connexion avec banque
       - Connexion avec Natixis

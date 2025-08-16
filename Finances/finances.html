@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Finances</title>
+    <title>Lifeboard - Finances</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dexie@3/dist/dexie.min.js"></script>
     <link rel="stylesheet" href="../style.css">
@@ -11,11 +11,11 @@
 </head>
 
 <body>
-    <a class="back-button" href="../index.html">🏠</a>
+    <a class="back-button" href="../Accueil/accueil.html">🏠</a>
     <button class="profil-button" popovertarget="profil-popover">👤</button>
     <div popover id="profil-popover">
         <div class="liste-deconnexion">
-            <button class="deconnexion">Se déconnecter</button>
+            <button class="deconnexion" onclick="deconnexion()">Se déconnecter</button>
         </div>
     </div>
     <h1>Finances</h1>
@@ -24,8 +24,22 @@
         <div id="lastTransactions">
             Chargement...
         </div>
-        <button id="add-button" onclick="addTransaction()">+</button>
+        <button id="add-button">+</button>
+        <dialog id="add-modal">
+            <button class="close-btn" aria-label="Fermer">&times;</button>
+
+            <form method="dialog" id="add-form">
+                <h3>Ajouter une transaction</h3>
+                <input id="nom-add" type="text" placeholder="Nom" required />
+                <input id="date-add" type="date" required />
+                <input id="montant-add" type="text" class="montant" placeholder="Montant" required />
+                <select id="categorie-add" required>
+                </select>
+                <button type="submit">Enregistrer</button>
+            </form>
+        </dialog>
     </div>
+    <script src="services.js"></script>
     <script src="script.js"></script>
 </body>
 
