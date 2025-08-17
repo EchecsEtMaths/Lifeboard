@@ -92,8 +92,42 @@ function construtTable(tableName, data) {
     const td = document.createElement("td");
     let htmlActions = "";
     htmlActions +=
-      "<button class='action' title='Modifier la ligne'>✏️</button>";
+      "<button class='action' title='Modifier la ligne' onclick='openUpdateModal(" +
+      row.id +
+      ")'>✏️</button>";
+    htmlActions += "<dialog id='update-modal-" + row.id + "'>";
+    htmlActions +=
+      "<button class='close-btn' aria-label='Fermer'>&times;</button>";
+    htmlActions += "<form method='dialog' id='update-form'>";
+    htmlActions += "<h3>Modifier la transaction</h3>";
+    htmlActions +=
+      "<input id='nom-update' type='text' placeholder='Nom' required value='" +
+      row.nom +
+      "'/>";
+    const date = new Date(row.dateTransac);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    const dateToDisplay = `${year}-${month}-${day}`;
+    htmlActions +=
+      "<input id='date-update' type='date' required value='" +
+      dateToDisplay +
+      "'/>";
+    htmlActions +=
+      "<input id='montant-update' type='text' class='montant' placeholder='Montant' required value='" +
+      row.montant +
+      "'/>";
+    htmlActions +=
+      "<select id='categorie-update' class='categorie-update' required value='" +
+      row.categorieNom +
+      "'>";
+    htmlActions += "</select>";
+    htmlActions += "<button type='submit'>Enregistrer</button>";
+    htmlActions += "</form>";
+    htmlActions += "</dialog>";
+
     htmlActions += "<span> </span>";
+
     htmlActions +=
       "<button class='action' title='Supprimer la ligne' popovertarget='supprimer-popover-" +
       row.id +
@@ -115,6 +149,7 @@ function construtTable(tableName, data) {
       row.id +
       ")'>❌</button>";
     htmlActions += "</div>";
+
     td.innerHTML = htmlActions;
     tr.appendChild(td);
 
@@ -134,6 +169,15 @@ async function loadLastTransactions(data) {
   const tableEl = construtTable("Dernières transactions courantes", limited);
 
   container.appendChild(tableEl);
+
+  getCategoriesService();
+
+  document.querySelectorAll(".close-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const dialog = btn.closest("dialog");
+      if (dialog) dialog.close();
+    });
+  });
 }
 
 async function loadTotalCourant(data) {
@@ -145,6 +189,10 @@ async function loadTotalCourant(data) {
 
 function popoverClose(id) {
   document.getElementById("supprimer-popover-" + id).hidePopover();
+}
+
+function openUpdateModal(id) {
+  document.getElementById("update-modal-" + id).showModal();
 }
 
 async function suppression(id) {
@@ -161,8 +209,6 @@ async function addTransaction() {
 getTransactionsService();
 
 getTotalCourantService();
-
-getCategoriesService();
 
 const urlParams = new URLSearchParams(window.location.search);
 const user = urlParams.get("user");

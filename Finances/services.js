@@ -75,6 +75,9 @@ async function getCategoriesService() {
         });
         document.getElementById("categorie-add").innerHTML =
           htmlCategorieToDisplay;
+        document.querySelectorAll(".categorie-update").forEach((select) => {
+          select.innerHTML = htmlCategorieToDisplay;
+        });
       })
       .catch((error) => {
         document.getElementById("totalCourant").innerHTML =
