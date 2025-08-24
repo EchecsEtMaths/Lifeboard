@@ -19,6 +19,7 @@ function addTransactionService() {
         date: document.getElementById("date-add").value,
         montant: document.getElementById("montant-add").value,
         categorie: document.getElementById("categorie-add").value,
+        commun: document.getElementById("commun-add").checked,
       }),
     })
       .then(async () => {

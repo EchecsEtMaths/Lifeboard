@@ -268,6 +268,7 @@ document.getElementById("add-form").addEventListener("submit", (event) => {
   document.getElementById("date-add").value = "";
   document.getElementById("montant-add").value = formatter.format(0);
   document.getElementById("categorie-add").value = "";
+  document.getElementById("commun-add").checked = false;
 });
 
 document.querySelectorAll(".montant").forEach((input) => {
