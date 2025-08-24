@@ -42,7 +42,7 @@ async function getTransactionsService() {
       })
       .catch((error) => {
         document.getElementById("lastTransactions").innerHTML =
-          "Erreur lors de la récupération des" + error;
+          "Erreur lors de la récupération des transactions";
         console.error("Erreur:", error);
       });
   })();
@@ -57,7 +57,7 @@ async function getTotalCourantService() {
       })
       .catch((error) => {
         document.getElementById("totalCourant").innerHTML =
-          "Erreur lors de la récupération du total" + error;
+          "Erreur lors de la récupération du total";
         console.error("Erreur:", error);
       });
   })();
