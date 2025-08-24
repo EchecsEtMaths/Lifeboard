@@ -9,7 +9,7 @@ function getActualUser() {
 
 function addTransactionService() {
   (async () => {
-    fetch("https://localhost:7040/Transactions" + getActualUser(), {
+    fetch(url + "Transactions" + getActualUser(), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -35,14 +35,14 @@ function addTransactionService() {
 
 async function getTransactionsService() {
   (async () => {
-    fetch("https://localhost:7040/Transactions" + getActualUser())
+    fetch(url + "Transactions" + getActualUser())
       .then((response) => response.json())
       .then((data) => {
         loadLastTransactions(data);
       })
       .catch((error) => {
         document.getElementById("lastTransactions").innerHTML =
-          "Erreur lors de la récupération des transactions";
+          "Erreur lors de la récupération des" + error;
         console.error("Erreur:", error);
       });
   })();
@@ -50,14 +50,14 @@ async function getTransactionsService() {
 
 async function getTotalCourantService() {
   (async () => {
-    fetch("https://localhost:7040/Transactions/total-courant" + getActualUser())
+    fetch(url + "Transactions/total-courant" + getActualUser())
       .then((response) => response.json())
       .then((data) => {
         loadTotalCourant(data);
       })
       .catch((error) => {
         document.getElementById("totalCourant").innerHTML =
-          "Erreur lors de la récupération du total";
+          "Erreur lors de la récupération du total" + error;
         console.error("Erreur:", error);
       });
   })();
@@ -65,7 +65,7 @@ async function getTotalCourantService() {
 
 async function getCategoriesService() {
   (async () => {
-    fetch("https://localhost:7040/Categories" + getActualUser())
+    fetch(url + "Categories" + getActualUser())
       .then((response) => response.json())
       .then((categories) => {
         let htmlCategorieToDisplay = "";
@@ -89,7 +89,7 @@ async function getCategoriesService() {
 
 function suppressionService(id) {
   (async () => {
-    fetch("https://localhost:7040/Transactions/" + id, {
+    fetch(url + "Transactions/" + id, {
       method: "DELETE",
     })
       .then(async () => {
