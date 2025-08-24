@@ -33,6 +33,8 @@ function construtTable(tableName, data) {
         ? "Montant"
         : col === "nom"
         ? "Nom"
+        : col === "commun"
+        ? "Dépense commune"
         : col;
 
     headRow.appendChild(th);
@@ -93,6 +95,15 @@ function construtTable(tableName, data) {
           style: "currency",
           currency: "EUR",
         }).format(value);
+      }
+
+      if (col === "commun") {
+        if (value) {
+          value = "✅";
+        } else {
+          value = "❌";
+        }
+        td.style.paddingLeft = "7%";
       }
 
       td.textContent = value ?? "Aucun";
